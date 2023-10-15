@@ -13,15 +13,20 @@ import javax.persistence.OneToOne;
 
 
 //TODO: add proper annotation
+@Entity
 public class Seat {
 
     //TODO: add proper annotation
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String number;
     private String zone;
     private boolean booked;
 
     //TODO: add proper annotation for relationship to concert
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "concert_id")
     private Concert concert;
 
 

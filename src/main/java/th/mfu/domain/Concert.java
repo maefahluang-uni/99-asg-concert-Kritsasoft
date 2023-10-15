@@ -7,19 +7,25 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 //TODO: add proper annotation
+@Entity
 public class Concert {
 
-    //TODO: add proper annotation 
+    // TODO: add proper annotation
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private Date date;
 
     //TODO: add proper annotation
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "performer_id")
     private Performer performer;
-    
+
 
     public Concert() {
     }

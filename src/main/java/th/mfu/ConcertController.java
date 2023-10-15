@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -36,30 +37,58 @@ public class ConcertController {
     ReservationRepository reservationRepo;
 
     //TODO: add proper annotation for GET method
+    @GetMapping("/book")
     public String book(Model model) {
         // TODO: list all concerts
+        List<Concert> Concerts = (List<Concert>) concertRepo.findAll();
+        model.addAttribute("concerts", Concerts);
         // TODO: return a template to list concerts
-        return "";
+        return "book";
     }
 
     //TODO: add proper annotation for GET method
+    @GetMapping("/book/concerts/{concertId}")
     public String reserveSeatForm(@PathVariable Long concertId, Model model) {
         // TODO: add concert to model
-
-        // TODO: add empty reservation to model
-
-        // TODO: find available seats (booked=false) by given concert's id to the model
-        return "";
+        Optional<Concert> concertOptional = concertRepo.findById(concertId);
+        if (concertOptional.isPresent()) {
+            Concert concert = concertOptional.get(); // Use get() to retrieve the value
+            model.addAttribute("concert", concert);
+        } else {
+            // Handle the case where the Optional object does not contain a value.
+            // For example, you could log the exception, display an error message to the user, or redirect the user to a different page.
+        }
+    
+        Reservation reservation = new Reservation();
+        model.addAttribute("reservation", reservation);
+    
+        List<Seat> availableSeats = seatRepo.findByBookedFalseAndConcertId(concertId);
+        model.addAttribute("availableSeats", availableSeats);
+    
+        // Add the "seats" attribute as well if needed
+        model.addAttribute("seats", availableSeats);
+    
+        return "reserve-seat";
     }
 
     @Transactional
     //TODO: add proper annotation for POST method
+    @PostMapping("/book/concerts/{concertId}")
     public String reserveSeat(@ModelAttribute Reservation reservation, @PathVariable Long concertId, Model model) {
-        // TODO: find selectd seat by id
-        //TODO: set booked to true
-        //TODO: save seat
-        // TODO: save reservation using reservationRepo
-        return "";
+        Optional<Seat> seatOptional = seatRepo.findById(reservation.getSeat().getId());
+
+        if (seatOptional.isPresent()) {
+            Seat seat = seatOptional.get(); // Use get() to retrieve the value
+            seat.setBooked(true);
+            seatRepo.save(seat);
+        } else {
+            // Handle the case where the Optional object does not contain a value.
+            return "redirect:/book"; // or other error handling
+        }
+
+        reservationRepo.save(reservation);
+
+        return "redirect:/book";
     }
 
     /*************************************/

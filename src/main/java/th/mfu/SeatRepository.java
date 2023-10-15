@@ -12,6 +12,4 @@ public interface SeatRepository extends CrudRepository<Seat, Long>{
     public List<Seat> findByBookedFalseAndConcertId(Long concertId);
     public List<Seat> findByBookedTrueAndConcertId(Long concertId);
     public List<Seat> findByBookedTrue();
-
-    
 }

@@ -6,14 +6,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
+
 //TODO: add proper annotation
+@Entity
+
 public class Performer {
 
-    //TODO: add proper annotation
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // TODO: add proper annotation
     private Long id;
     private String name;
 
 
+    public Performer() {
+        this.id = id;
+        this.name = name;
+    }
     public Long getId() {
         return id;
     }
@@ -28,5 +38,4 @@ public class Performer {
     }
 
 
-    
 }
